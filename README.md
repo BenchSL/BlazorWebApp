@@ -1,4 +1,4 @@
-Spletna aplikacija, ki prikazuje uporabo regex izrazov v Blazor APP. 
+Spletna aplikacija narejena z uporabe tehnologije Blazor.
 
 Aplikacija uporablja C#, jQuery, Javascript, HTML, CSS.
 
