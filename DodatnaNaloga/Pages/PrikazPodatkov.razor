@@ -1,0 +1,185 @@
+﻿@page "/PrikazPodatkov"
+
+@using DodatnaNaloga.Models;
+@using DodatnaNaloga.Services;
+@inject KnjigaService BookService
+@inject AvtorService AuthorService
+@inject StrankaService CustomerService
+@inject IJSRuntime jsRuntime
+@*@inject WeatherForecastService ForecastService*@
+
+<h1>Prikaz podatkov</h1>
+
+@*<button class="btn btn-primary" @onclick="IncrementCount">Click me</button>*@
+
+
+
+<div id="accordion">
+
+    <h3>Avtorji</h3>
+    <div>
+        @if (Db.avtorji.Count() == 0)
+        {
+            <p><em>Nalagam...</em></p>
+        }
+        else
+        {
+    <div class="col">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Ime</th>
+                    <th>Starost</th>
+                    <th>Leto rojstva</th>
+                    <th>Ocena</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var avtor in Db.avtorji)
+                {
+                    <tr>
+                        <td>@avtor.Id</td>
+                        <td>@avtor.Ime</td>
+                        <td>@avtor.Starost</td>
+                        <td>@avtor.DatumRojstva</td>
+                        <td>@avtor.Ocena</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="CentraliziranaForma">
+            <form>
+                <input @bind="Id" @bind:event="oninput" class="MargTop" /> <br />
+                <p></p>
+                <input @onclick="HandleValidDeleteAuthor" type="submit" class="btn btn-primary GumbCenter" value="Izbriši">
+            </form>
+        </div>
+
+    </div>
+        }
+    </div>
+    <h3>Stranke</h3>
+    <div>
+        @if (Db.stranke.Count() == 0)
+        {
+            <p><em>Nalagam...</em></p>
+        }
+        else
+        {
+          <div class="col">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Ime</th>
+                        <th>Starost</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var stranka in Db.stranke)
+                    {
+                        <tr>
+                            <td>@stranka.Id</td>
+                            <td>@stranka.ImeStranke</td>
+                            <td>@stranka.Starost</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <div class="CentraliziranaForma">
+                <form>
+                    <input @bind="Id" @bind:event="oninput" class="MargTop"/> <br />
+                    <p />
+                    <input @onclick="HandleValidDeleteCustomer" type="submit" class="btn btn-primary GumbCenter" value="Izbriši">
+                </form>
+            </div>
+
+          </div>
+        }
+    </div>
+
+    <h3>Knjige</h3>
+    <div>
+        @if (Db.knjige.Count() == 0)
+        {
+            <p><em>Nalagam...</em></p>
+        }
+        else
+        {
+    <div class="row">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Id</th>
+                    <th>Naslov</th>
+                    <th>Starost</th>
+                    <th>Izbriši</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var knjiga in Db.knjige)
+                {
+                    <tr>
+                        <td>@knjiga.Id</td>
+                        <td>@knjiga.Naslov</td>
+                        <td>@knjiga.LetoIzdaje</td>
+                        <td><NavLink @onclick="HandleValidDeleteBook">X</NavLink></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <div class="CentraliziranaForma">
+            <form>
+                <br />
+                <input @bind="Id" @bind:event="oninput" class="MargTop"/> <br />
+                <p />
+                <input @onclick="HandleValidDeleteBook" type="submit" class="btn btn-primary GumbCenter" value="Izbriši">
+                <br />
+            </form>
+        </div>
+
+    </div>
+        }
+    </div>
+</div>
+
+
+@code {
+    public KnjigarnaContext Db = new KnjigarnaContext();
+    public int Id { get; set; }
+
+    protected override async void OnAfterRender(bool firstRender)
+    {
+        await jsRuntime.InvokeVoidAsync("renderjQueryComponents");
+        await base.OnAfterRenderAsync(firstRender);
+    }
+
+}
+
+@code {
+
+    private async void HandleValidDeleteBook()
+    {
+        await BookService.DeleteKnjiga(Id);
+    }
+}
+
+@code{
+    private async void HandleValidDeleteAuthor()
+    {
+        await AuthorService.DeleteAvtor(Id);
+    }
+}
+
+@code{
+    private async void HandleValidDeleteCustomer()
+    {
+        await CustomerService.DeleteStranka(Id);
+    }
+}
+

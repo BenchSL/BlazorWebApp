@@ -1,0 +1,148 @@
+﻿@page "/Filtriraj"
+
+@using DodatnaNaloga.Models
+@inject DodatnaNaloga.Services.AvtorService AuthService
+
+<h1>Filtriranje primerkov po ID</h1>
+
+<NapotkiFiltriranja Title="Kako uporabiti funkcionalnost filtriranja?" />
+<form class="CentraliziranaForma">
+
+    <select class="form-control SelectCenter" value="@defaultValue " @onchange="@OnSelect" style="width:150px">
+        @foreach (var IzbModel in ModeliIzbire)
+        {
+            <option value=@IzbModel>@IzbModel</option>
+        }
+    </select>
+
+    <h5>@selectedString</h5>
+
+    <br />
+    <input @bind="IdAvtor" @bind:event="oninput" class="MargTop" /> <br />
+    <p />
+    <input @onclick="FilterAuth" type="submit" class="btn btn-primary GumbCenter" value="Najdi">
+
+
+    @if (IzbraniModel == "Knjiga")
+    {
+    <input type="submit" class="btn btn-primary GumbCenter" value="Najdi">
+}
+
+    @if (IzbraniModel == "Stranka")
+    {
+    <input type="submit" class="btn btn-primary GumbCenter" value="Najdi">
+}
+
+    <br />
+</form>
+
+
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Ime</th>
+                <th>Starost</th>
+                <th>Datum Rojstva</th>
+                <th>Ocena</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@dummy.Id</td>
+                <td>@dummy.Ime</td>
+                <td>@dummy.Starost</td>
+                <td>@dummy.DatumRojstva</td>
+                <td>@dummy.Ocena</td>
+            </tr>
+        </tbody>
+    </table>
+
+
+@if (PredVal == "Knjiga")
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Naslov</th>
+                <th>Leto Izdaje</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@dummy.Id</td>
+                <td>@dummy.Ime</td>
+                <td>@dummy.Starost</td>
+                <td>@dummy.DatumRojstva</td>
+                <td>@dummy.Ocena</td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+
+@if (PredVal == "Stranka")
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Ime</th>
+                <th>Starost</th>
+                <th>Datum Rojstva</th>
+                <th>Ocena</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>@dummy.Id</td>
+                <td>@dummy.Ime</td>
+                <td>@dummy.Starost</td>
+                <td>@dummy.DatumRojstva</td>
+                <td>@dummy.Ocena</td>
+            </tr>
+        </tbody>
+    </table>
+}
+
+@code {
+
+    public KnjigarnaContext Db = new KnjigarnaContext();
+
+    public List<string> ModeliIzbire = new List<string>() {"Avtor", "Knjiga", "Stranka" };
+
+    public string IzbraniModel { get; set; }
+
+    public string PredVal { get; set; }
+
+    public string selectedString = "";
+    public string defaultValue = "Avtor";
+
+    void OnSelect(ChangeEventArgs e)
+    {
+        IzbraniModel = e.Value.ToString();
+
+        if ("--Izberite Model--" != IzbraniModel)
+        {
+            selectedString = "Izbran model: " + e.Value.ToString();
+        }
+    }
+
+}
+
+@code {
+    public int IdAvtor { get; set; }
+
+   
+
+    public Avtor dummy = new Avtor();
+
+    public async Task<Avtor> FilterAuth()
+    {
+        var auth = await AuthService.GetAvtor(IdAvtor, dummy);
+        selectedString = auth.Ime;
+        return auth;
+    }
+}

@@ -1,0 +1,17 @@
+﻿<div class="alert alert-secondary mt-4" role="alert">
+    <span class="oi oi-magnifying-glass mr-2" aria-hidden="true"></span>
+    <strong>@Title</strong>
+
+    <span class="text-nowrap">
+        Pri filtriranju v polje vpišete
+        <span class="font-weight-bold">ID</span>
+    </span>
+    , ter v izbiri izberete tipe primerka, ki želite filtrirati, <span class="font-weight-bold">v tabeli se Vam bo prikazal rezultat iskanja.</span>
+</div>
+
+
+
+@code {
+    [Parameter]
+    public string Title { get; set; }
+}
